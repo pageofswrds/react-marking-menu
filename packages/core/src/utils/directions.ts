@@ -19,10 +19,10 @@ export function getDirectionFromPosition(
   const dx = x - originX
   const dy = y - originY
 
-  // Invert Y-axis because screen coordinates have Y increasing downward
-  // but we want North to be up (negative Y direction)
-  // Calculate angle in degrees (0° = East, counterclockwise)
-  let angle = Math.atan2(-dy, dx) * (180 / Math.PI)
+  // Calculate angle in degrees
+  // Screen coordinates: Y increases downward, X increases rightward
+  // Our angle system: 0°=E, 90°=S, 180°=W, 270°=N (matches screen coords)
+  let angle = Math.atan2(dy, dx) * (180 / Math.PI)
 
   // Normalize to 0-360 range
   angle = (angle + 360) % 360
