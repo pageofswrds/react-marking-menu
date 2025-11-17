@@ -219,7 +219,7 @@ export function MarkingMenu({
     if (!defaultA11y.announcements) return
 
     // Announce when menu opens
-    if (gesture.state === 'active') {
+    if (gesture.state === 'active' && defaultA11y.messages.menuOpened) {
       setAnnouncement(defaultA11y.messages.menuOpened)
     }
   }, [gesture.state, defaultA11y])
@@ -228,7 +228,7 @@ export function MarkingMenu({
     if (!defaultA11y.announcements) return
 
     // Announce direction changes
-    if (gesture.currentDirection && gesture.state === 'selecting') {
+    if (gesture.currentDirection && gesture.state === 'selecting' && defaultA11y.messages.directionChanged) {
       const item = items.find((i) => i.direction === gesture.currentDirection)
       if (item) {
         setAnnouncement(defaultA11y.messages.directionChanged(gesture.currentDirection))

@@ -69,13 +69,13 @@ export interface UseMarkingMenuGestureReturn {
    * Props to spread on the trigger element
    */
   getTriggerProps: () => {
-    onPointerDown: (e: PointerEvent) => void
-    onPointerMove: (e: PointerEvent) => void
-    onPointerUp: (e: PointerEvent) => void
-    onPointerCancel: (e: PointerEvent) => void
-    onKeyDown: (e: KeyboardEvent) => void
-    onKeyUp: (e: KeyboardEvent) => void
-    onContextMenu?: (e: Event) => void
+    onPointerDown: (e: React.PointerEvent) => void
+    onPointerMove: (e: React.PointerEvent) => void
+    onPointerUp: (e: React.PointerEvent) => void
+    onPointerCancel: (e: React.PointerEvent) => void
+    onKeyDown: (e: React.KeyboardEvent) => void
+    onKeyUp: (e: React.KeyboardEvent) => void
+    onContextMenu?: (e: React.MouseEvent) => void
     tabIndex: number
   }
 
@@ -150,7 +150,7 @@ export function useMarkingMenuGesture({
 
   // Pointer event handlers
   const handlePointerDown = useCallback(
-    (e: PointerEvent) => {
+    (e: React.PointerEvent) => {
       if (!enabled) return
 
       // Only handle primary button (left mouse button or touch)
@@ -173,7 +173,7 @@ export function useMarkingMenuGesture({
   )
 
   const handlePointerMove = useCallback(
-    (e: PointerEvent) => {
+    (e: React.PointerEvent) => {
       if (!enabled) return
 
       // Only track the captured pointer
@@ -205,7 +205,7 @@ export function useMarkingMenuGesture({
   )
 
   const handlePointerUp = useCallback(
-    (e: PointerEvent) => {
+    (e: React.PointerEvent) => {
       if (!enabled) return
 
       // Only handle the captured pointer
@@ -222,7 +222,7 @@ export function useMarkingMenuGesture({
   )
 
   const handlePointerCancel = useCallback(
-    (e: PointerEvent) => {
+    (e: React.PointerEvent) => {
       if (!enabled) return
 
       // Only handle the captured pointer
@@ -233,13 +233,14 @@ export function useMarkingMenuGesture({
       pointerIdRef.current = null
 
       cancel()
+      onCancel?.()
     },
-    [enabled, cancel]
+    [enabled, cancel, onCancel]
   )
 
   // Keyboard event handlers
   const handleKeyDown = useCallback(
-    (e: KeyboardEvent) => {
+    (e: React.KeyboardEvent) => {
       if (!enabled) return
 
       // Cancel on Escape
@@ -247,6 +248,7 @@ export function useMarkingMenuGesture({
         e.preventDefault()
         cancel()
         keyboardStateRef.current = createKeyboardState()
+        onCancel?.()
         return
       }
 
@@ -285,7 +287,7 @@ export function useMarkingMenuGesture({
   )
 
   const handleKeyUp = useCallback(
-    (e: KeyboardEvent) => {
+    (e: React.KeyboardEvent) => {
       if (!enabled) return
 
       // Ignore if modifier keys are pressed
@@ -315,7 +317,7 @@ export function useMarkingMenuGesture({
   )
 
   const handleContextMenu = useCallback(
-    (e: Event) => {
+    (e: React.MouseEvent) => {
       if (preventContextMenu) {
         e.preventDefault()
       }
@@ -326,12 +328,12 @@ export function useMarkingMenuGesture({
   // Get trigger props
   const getTriggerProps = useCallback(() => {
     const baseProps = {
-      onPointerDown: handlePointerDown as unknown as (e: PointerEvent) => void,
-      onPointerMove: handlePointerMove as unknown as (e: PointerEvent) => void,
-      onPointerUp: handlePointerUp as unknown as (e: PointerEvent) => void,
-      onPointerCancel: handlePointerCancel as unknown as (e: PointerEvent) => void,
-      onKeyDown: handleKeyDown as unknown as (e: KeyboardEvent) => void,
-      onKeyUp: handleKeyUp as unknown as (e: KeyboardEvent) => void,
+      onPointerDown: handlePointerDown,
+      onPointerMove: handlePointerMove,
+      onPointerUp: handlePointerUp,
+      onPointerCancel: handlePointerCancel,
+      onKeyDown: handleKeyDown,
+      onKeyUp: handleKeyUp,
       tabIndex: 0,
     }
 
