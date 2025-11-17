@@ -65,7 +65,8 @@ export function MarkingMenuContent({
   style,
   forceMount = false,
 }: MarkingMenuContentProps) {
-  const { state, origin, currentDirection } = useMarkingMenuContext()
+  const { state, origin, currentDirection, a11y, currentDirection: activeDirection } =
+    useMarkingMenuContext()
 
   // Only show when menu is active or selecting (or forced)
   const shouldRender = forceMount || state === 'active' || state === 'selecting'
@@ -88,16 +89,23 @@ export function MarkingMenuContent({
 
   const mergedStyle = { ...positionStyles, ...style }
 
+  // ARIA attributes
+  const ariaProps = {
+    role: 'menu' as const,
+    'aria-label': a11y.label,
+    'aria-orientation': 'radial' as const,
+  }
+
   if (render) {
     return (
-      <div className={className} style={mergedStyle}>
+      <div {...ariaProps} className={className} style={mergedStyle}>
         {render({ state, origin, currentDirection })}
       </div>
     )
   }
 
   return (
-    <div className={className} style={mergedStyle}>
+    <div {...ariaProps} className={className} style={mergedStyle}>
       {children}
     </div>
   )

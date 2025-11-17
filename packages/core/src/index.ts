@@ -15,7 +15,10 @@ export type {
 
 export type { ArrowKey, KeyboardState } from './utils/keyboard'
 
-export type { MarkingMenuContextValue } from './components/MarkingMenu'
+export type {
+  MarkingMenuContextValue,
+  AccessibilityConfig,
+} from './components/MarkingMenu'
 
 // Hooks
 export { useMarkingMenuStateMachine } from './hooks/useMarkingMenuStateMachine'
@@ -25,6 +28,11 @@ export {
   type UseMarkingMenuGestureReturn,
 } from './hooks/useMarkingMenuGesture'
 export { useMarkingMenuContext } from './hooks/useMarkingMenuContext'
+export {
+  useFocusManagement,
+  type UseFocusManagementProps,
+} from './hooks/useFocusManagement'
+export { useReducedMotion } from './hooks/useReducedMotion'
 
 // Utilities - Directions
 export {
@@ -61,3 +69,10 @@ export {
   type MarkingMenuItemProps,
   type MarkingMenuItemRenderProps,
 } from './components/MarkingMenuItem'
+
+// Accessibility Components
+export { LiveRegion, type LiveRegionProps } from './components/LiveRegion'
+export {
+  KeyboardIndicator,
+  type KeyboardIndicatorProps,
+} from './components/KeyboardIndicator'

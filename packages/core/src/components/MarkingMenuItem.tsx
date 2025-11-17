@@ -177,8 +177,17 @@ export function MarkingMenuItem({
     ? `${className} ${isHighlighted ? 'marking-menu-item-highlighted' : ''} ${isSelected ? 'marking-menu-item-selected' : ''} ${disabled ? 'marking-menu-item-disabled' : ''}`
     : `${isHighlighted ? 'marking-menu-item-highlighted' : ''} ${isSelected ? 'marking-menu-item-selected' : ''} ${disabled ? 'marking-menu-item-disabled' : ''}`
 
+  // ARIA attributes
+  const ariaProps = {
+    role: 'menuitem' as const,
+    'aria-label': label || `${direction} direction`,
+    'aria-disabled': disabled,
+    'aria-current': isHighlighted ? ('true' as const) : undefined,
+  }
+
   return (
     <div
+      {...ariaProps}
       className={mergedClassName.trim()}
       style={style}
       data-direction={direction}

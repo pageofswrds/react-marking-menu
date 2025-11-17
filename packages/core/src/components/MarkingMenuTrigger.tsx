@@ -51,8 +51,16 @@ export function MarkingMenuTrigger({
   className,
   style,
 }: MarkingMenuTriggerProps) {
-  const { getTriggerProps } = useMarkingMenuContext()
+  const { getTriggerProps, a11y, state } = useMarkingMenuContext()
   const triggerProps = getTriggerProps()
+
+  // ARIA attributes
+  const ariaProps = {
+    'aria-label': a11y.label,
+    'aria-expanded': state === 'active' || state === 'selecting',
+    'aria-haspopup': 'menu' as const,
+    'aria-describedby': a11y.description ? 'marking-menu-description' : undefined,
+  }
 
   if (asChild) {
     // Clone the child element and merge props
@@ -60,6 +68,7 @@ export function MarkingMenuTrigger({
 
     return React.cloneElement(child, {
       ...triggerProps,
+      ...ariaProps,
       ...child.props,
       className: className
         ? `${child.props.className || ''} ${className}`.trim()
@@ -70,9 +79,35 @@ export function MarkingMenuTrigger({
 
   // Render default button
   return (
-    <button {...triggerProps} className={className} style={style} type="button">
-      {children}
-    </button>
+    <>
+      <button
+        {...triggerProps}
+        {...ariaProps}
+        className={className}
+        style={style}
+        type="button"
+      >
+        {children}
+      </button>
+      {a11y.description && (
+        <div
+          id="marking-menu-description"
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            padding: 0,
+            margin: '-1px',
+            overflow: 'hidden',
+            clip: 'rect(0, 0, 0, 0)',
+            whiteSpace: 'nowrap',
+            border: 0,
+          }}
+        >
+          {a11y.description}
+        </div>
+      )}
+    </>
   )
 }
 
