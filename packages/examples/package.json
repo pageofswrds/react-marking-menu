@@ -1,0 +1,23 @@
+{
+  "name": "@react-marking-menu/examples",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Example implementations of react-marking-menu",
+  "scripts": {
+    "dev": "echo 'Examples placeholder - add Vite or Next.js later'",
+    "build": "echo 'No build needed for examples'",
+    "lint": "eslint src --ext .ts,.tsx",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@react-marking-menu/core": "workspace:*",
+    "@react-marking-menu/styled": "workspace:*",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
+    "typescript": "^5.3.3"
+  }
+}
