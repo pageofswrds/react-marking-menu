@@ -14,16 +14,30 @@ export type {
   MarkingMenuContextValue,
 } from './types'
 
+export type { ArrowKey, KeyboardState } from './utils/keyboard'
+
 // Hooks
 export { useMarkingMenuStateMachine } from './hooks/useMarkingMenuStateMachine'
 
-// Utilities
+// Utilities - Directions
 export {
   getDirectionFromPosition,
   directionToAngle,
   getDistance,
   getAvailableDirections,
 } from './utils/directions'
+
+// Utilities - Keyboard
+export {
+  isArrowKey,
+  getDirectionFromSingleKey,
+  getDirectionFromTwoKeys,
+  getDirectionFromKeys,
+  createKeyboardState,
+  handleKeyDown,
+  handleKeyUp,
+  resetKeyboardState,
+} from './utils/keyboard'
 
 // Components (to be implemented)
 // export { MarkingMenu } from './components/MarkingMenu'
