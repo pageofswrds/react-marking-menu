@@ -126,9 +126,10 @@ export function MarkingMenu({
   // Default config
   const defaultConfig: Required<GestureConfig> = {
     pressThreshold: config?.pressThreshold ?? 150,
-    minDistance: config?.minDistance ?? 30,
+    minDistance: config?.minDistance ?? 50,
     directions: config?.directions ?? 8,
     preventContextMenu: config?.preventContextMenu ?? true,
+    originMode: config?.originMode ?? 'element',
   }
 
   // Default accessibility config
@@ -205,6 +206,7 @@ export function MarkingMenu({
       defaultConfig.minDistance,
       defaultConfig.directions,
       defaultConfig.preventContextMenu,
+      defaultConfig.originMode,
       defaultA11y.announcements,
       defaultA11y.label,
       defaultA11y.description,

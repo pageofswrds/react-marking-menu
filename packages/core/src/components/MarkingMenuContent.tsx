@@ -79,6 +79,7 @@ export function MarkingMenuContent({
       left: origin.x,
       top: origin.y,
       pointerEvents: 'none' as const, // Prevent interfering with pointer events
+      zIndex: 9999, // Ensure menu appears above other content
     }
   }, [origin])
 

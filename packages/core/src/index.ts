@@ -11,6 +11,7 @@ export type {
   Position,
   GestureConfig,
   MenuItem,
+  OriginMode,
 } from './types'
 
 export type { ArrowKey, KeyboardState } from './utils/keyboard'

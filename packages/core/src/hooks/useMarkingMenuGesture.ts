@@ -8,7 +8,7 @@ import {
   isArrowKey,
   type KeyboardState,
 } from '../utils/keyboard'
-import type { Direction, Direction4, GestureConfig, MenuItem } from '../types'
+import type { Direction, Direction4, GestureConfig, MenuItem, Position } from '../types'
 
 /**
  * Props for the unified gesture hook
@@ -99,9 +99,10 @@ export function useMarkingMenuGesture({
 }: UseMarkingMenuGestureProps): UseMarkingMenuGestureReturn {
   const {
     pressThreshold = 150,
-    minDistance = 30,
+    minDistance = 50,
     directions = 8,
     preventContextMenu = true,
+    originMode = 'element',
   } = config
 
   const stateMachine = useMarkingMenuStateMachine()
@@ -119,6 +120,54 @@ export function useMarkingMenuGesture({
   // Keyboard state
   const keyboardStateRef = useRef<KeyboardState>(createKeyboardState())
   const pointerIdRef = useRef<number | null>(null)
+  const triggerElementRef = useRef<HTMLElement | null>(null)
+
+  // Calculate origin based on mode
+  const calculateOrigin = useCallback(
+    (
+      event?: React.PointerEvent | React.KeyboardEvent,
+      element?: HTMLElement | null
+    ): Position => {
+      switch (originMode) {
+        case 'cursor':
+          // Use cursor position (pointer events only)
+          if (event && 'clientX' in event) {
+            return { x: event.clientX, y: event.clientY }
+          }
+          // Fallback to element center for keyboard
+          return calculateElementCenter(element)
+
+        case 'viewport':
+          // Center of viewport
+          return {
+            x: window.innerWidth / 2,
+            y: window.innerHeight / 2,
+          }
+
+        case 'element':
+        default:
+          // Center of trigger element
+          return calculateElementCenter(element)
+      }
+    },
+    [originMode]
+  )
+
+  // Helper to calculate element center
+  const calculateElementCenter = (element?: HTMLElement | null): Position => {
+    if (element) {
+      const rect = element.getBoundingClientRect()
+      return {
+        x: rect.left + rect.width / 2,
+        y: rect.top + rect.height / 2,
+      }
+    }
+    // Fallback to viewport center
+    return {
+      x: window.innerWidth / 2,
+      y: window.innerHeight / 2,
+    }
+  }
 
   // Find item by direction
   const findItemByDirection = useCallback(
@@ -159,17 +208,23 @@ export function useMarkingMenuGesture({
       // Ignore if we're already tracking a pointer
       if (pointerIdRef.current !== null) return
 
+      // Store trigger element reference
+      triggerElementRef.current = e.currentTarget as HTMLElement
+
       // Capture the pointer
       pointerIdRef.current = e.pointerId
       ;(e.target as HTMLElement).setPointerCapture?.(e.pointerId)
 
+      // Calculate origin based on mode
+      const originPos = calculateOrigin(e, triggerElementRef.current)
+
       // Start the gesture
-      startPress({ x: e.clientX, y: e.clientY }, pressThreshold)
+      startPress(originPos, pressThreshold)
 
       // Reset keyboard state when starting pointer gesture
       keyboardStateRef.current = createKeyboardState()
     },
-    [enabled, startPress, pressThreshold]
+    [enabled, startPress, pressThreshold, calculateOrigin]
   )
 
   const handlePointerMove = useCallback(
@@ -243,6 +298,11 @@ export function useMarkingMenuGesture({
     (e: React.KeyboardEvent) => {
       if (!enabled) return
 
+      // Store trigger element reference
+      if (!triggerElementRef.current) {
+        triggerElementRef.current = e.currentTarget as HTMLElement
+      }
+
       // Cancel on Escape
       if (e.key === 'Escape') {
         e.preventDefault()
@@ -271,19 +331,16 @@ export function useMarkingMenuGesture({
       if (result.direction) {
         if (state === 'idle') {
           // First key pressed - start gesture
-          // Use a dummy origin at center of viewport for keyboard
-          const dummyOrigin = {
-            x: window.innerWidth / 2,
-            y: window.innerHeight / 2,
-          }
-          startPress(dummyOrigin, pressThreshold)
+          // Calculate origin based on mode (element or viewport for keyboard)
+          const originPos = calculateOrigin(e, triggerElementRef.current)
+          startPress(originPos, pressThreshold)
         }
 
         // Update direction
         updatePosition(result.direction)
       }
     },
-    [enabled, state, cancel, startPress, updatePosition, pressThreshold]
+    [enabled, state, cancel, startPress, updatePosition, pressThreshold, calculateOrigin]
   )
 
   const handleKeyUp = useCallback(

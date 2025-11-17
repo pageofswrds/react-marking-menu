@@ -19,7 +19,9 @@ export function getDirectionFromPosition(
   const dx = x - originX
   const dy = y - originY
 
-  // Calculate angle in degrees (0° = East, counterclockwise)
+  // Calculate angle in degrees
+  // Screen coordinates: Y increases downward, X increases rightward
+  // Our angle system: 0°=E, 90°=S, 180°=W, 270°=N (matches screen coords)
   let angle = Math.atan2(dy, dx) * (180 / Math.PI)
 
   // Normalize to 0-360 range
