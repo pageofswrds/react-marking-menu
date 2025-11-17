@@ -11,6 +11,15 @@ export type {
   Position,
   GestureConfig,
   MenuItem,
+<<<<<<< Updated upstream
+=======
+  OriginMode,
+} from './types'
+
+export type { ArrowKey, KeyboardState } from './utils/keyboard'
+
+export type {
+>>>>>>> Stashed changes
   MarkingMenuContextValue,
 } from './types'
 
