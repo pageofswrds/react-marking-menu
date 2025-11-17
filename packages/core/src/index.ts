@@ -18,6 +18,11 @@ export type { ArrowKey, KeyboardState } from './utils/keyboard'
 
 // Hooks
 export { useMarkingMenuStateMachine } from './hooks/useMarkingMenuStateMachine'
+export {
+  useMarkingMenuGesture,
+  type UseMarkingMenuGestureProps,
+  type UseMarkingMenuGestureReturn,
+} from './hooks/useMarkingMenuGesture'
 
 // Utilities - Directions
 export {
