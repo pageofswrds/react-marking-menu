@@ -41,10 +41,12 @@
     "react-dom": "^18.0.0"
   },
   "devDependencies": {
+    "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
     "@testing-library/react-hooks": "^8.0.1",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
+    "@vitest/coverage-v8": "^1.2.0",
     "jsdom": "^24.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
