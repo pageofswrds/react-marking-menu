@@ -88,17 +88,3 @@ export interface MenuItem {
    */
   disabled?: boolean
 }
-
-/**
- * Context value for marking menu
- */
-export interface MarkingMenuContextValue {
-  state: MenuState
-  origin: Position | null
-  currentDirection: Direction | Direction4 | null
-  selectedItem: string | null
-  config: Required<GestureConfig>
-  items: MenuItem[]
-  registerItem: (item: MenuItem) => void
-  unregisterItem: (id: string) => void
-}

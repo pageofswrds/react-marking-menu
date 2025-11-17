@@ -11,10 +11,11 @@ export type {
   Position,
   GestureConfig,
   MenuItem,
-  MarkingMenuContextValue,
 } from './types'
 
 export type { ArrowKey, KeyboardState } from './utils/keyboard'
+
+export type { MarkingMenuContextValue } from './components/MarkingMenu'
 
 // Hooks
 export { useMarkingMenuStateMachine } from './hooks/useMarkingMenuStateMachine'
@@ -23,6 +24,7 @@ export {
   type UseMarkingMenuGestureProps,
   type UseMarkingMenuGestureReturn,
 } from './hooks/useMarkingMenuGesture'
+export { useMarkingMenuContext } from './hooks/useMarkingMenuContext'
 
 // Utilities - Directions
 export {
@@ -44,9 +46,18 @@ export {
   resetKeyboardState,
 } from './utils/keyboard'
 
-// Components (to be implemented)
-// export { MarkingMenu } from './components/MarkingMenu'
-// export { MarkingMenuTrigger } from './components/MarkingMenuTrigger'
-// export { MarkingMenuContent } from './components/MarkingMenuContent'
-// export { MarkingMenuItem } from './components/MarkingMenuItem'
-// export { useMarkingMenuContext } from './hooks/useMarkingMenuContext'
+// Components
+export { MarkingMenu, type MarkingMenuProps } from './components/MarkingMenu'
+export {
+  MarkingMenuTrigger,
+  type MarkingMenuTriggerProps,
+} from './components/MarkingMenuTrigger'
+export {
+  MarkingMenuContent,
+  type MarkingMenuContentProps,
+} from './components/MarkingMenuContent'
+export {
+  MarkingMenuItem,
+  type MarkingMenuItemProps,
+  type MarkingMenuItemRenderProps,
+} from './components/MarkingMenuItem'
