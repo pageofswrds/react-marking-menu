@@ -42,7 +42,7 @@ export interface GestureConfig {
 
   /**
    * Minimum distance in pixels to move before selecting
-   * @default 30
+   * @default 50
    */
   minDistance?: number
 

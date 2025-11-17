@@ -99,7 +99,7 @@ export function useMarkingMenuGesture({
 }: UseMarkingMenuGestureProps): UseMarkingMenuGestureReturn {
   const {
     pressThreshold = 150,
-    minDistance = 30,
+    minDistance = 50,
     directions = 8,
     preventContextMenu = true,
     originMode = 'element',
