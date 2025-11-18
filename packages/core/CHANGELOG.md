@@ -1,10 +1,37 @@
 # @react-marking-menu/core
 
-## 0.1.0
+## 0.1.1
+
+### Patch Changes
+
+- Bug fixes and UX improvements for touch and keyboard interactions
+
+  **Touch Device Improvements:**
+  - Fixed iOS/Android touch interactions by adding `preventDefault()` to pointer event handlers
+  - Prevents text selection, scrolling, and callout menus during gestures
+  - Added comprehensive CSS documentation for touch-action and user-select
+
+  **Keyboard Interaction Improvements:**
+  - Click-to-focus behavior: Quick clicks (<150ms) now focus the trigger without opening the menu
+  - Instant keyboard response: Removed async delay for arrow key presses (0ms response time)
+  - Fixed timing issues with rapid key presses by making keyboard gestures fully synchronous
+  - Keyboard gestures now use `startImmediate()` instead of timer-based activation
+
+  **UI State Management:**
+  - Added data attributes to trigger element for state-based styling (`data-idle`, `data-pressed`, `data-active`, `data-selecting`)
+  - Improved focus state styling support with `:focus-visible` compatibility
+
+  **Documentation:**
+  - Updated READMEs with touch device requirements and CSS examples
+  - Documented click vs press-and-hold behavior
+  - Added focus and interaction state styling guide
+  - Cleaned up implementation plan to reflect current status
+
+## 0.1.0-beta.0
 
 ### Minor Changes
 
-- 6e4ad70: Initial release of @react-marking-menu/core
+- Initial release of @react-marking-menu/core
 
   This is the first public release of the headless React marking menu library.
 
@@ -34,28 +61,3 @@
   - Direction calculation (angle-based)
   - Keyboard input handling (arrow keys with multi-key support)
   - Accessibility helpers
-
-### Patch Changes
-
-- Bug fixes and UX improvements for touch and keyboard interactions
-
-  **Touch Device Improvements:**
-  - Fixed iOS/Android touch interactions by adding `preventDefault()` to pointer event handlers
-  - Prevents text selection, scrolling, and callout menus during gestures
-  - Added comprehensive CSS documentation for touch-action and user-select
-
-  **Keyboard Interaction Improvements:**
-  - Click-to-focus behavior: Quick clicks (<150ms) now focus the trigger without opening the menu
-  - Instant keyboard response: Removed async delay for arrow key presses (0ms response time)
-  - Fixed timing issues with rapid key presses by making keyboard gestures fully synchronous
-  - Keyboard gestures now use `startImmediate()` instead of timer-based activation
-
-  **UI State Management:**
-  - Added data attributes to trigger element for state-based styling (`data-idle`, `data-pressed`, `data-active`, `data-selecting`)
-  - Improved focus state styling support with `:focus-visible` compatibility
-
-  **Documentation:**
-  - Updated READMEs with touch device requirements and CSS examples
-  - Documented click vs press-and-hold behavior
-  - Added focus and interaction state styling guide
-  - Cleaned up implementation plan to reflect current status
