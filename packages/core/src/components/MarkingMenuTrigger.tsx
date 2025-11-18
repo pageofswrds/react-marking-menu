@@ -62,6 +62,15 @@ export function MarkingMenuTrigger({
     'aria-describedby': a11y.description ? 'marking-menu-description' : undefined,
   }
 
+  // Data attributes for styling based on state
+  const dataProps = {
+    'data-state': state,
+    'data-idle': state === 'idle' ? '' : undefined,
+    'data-pressed': state === 'pressed' ? '' : undefined,
+    'data-active': state === 'active' ? '' : undefined,
+    'data-selecting': state === 'selecting' ? '' : undefined,
+  }
+
   if (asChild) {
     // Clone the child element and merge props
     const child = React.Children.only(children) as React.ReactElement
@@ -69,6 +78,7 @@ export function MarkingMenuTrigger({
     return React.cloneElement(child, {
       ...triggerProps,
       ...ariaProps,
+      ...dataProps,
       ...child.props,
       className: className
         ? `${child.props.className || ''} ${className}`.trim()
@@ -83,6 +93,7 @@ export function MarkingMenuTrigger({
       <button
         {...triggerProps}
         {...ariaProps}
+        {...dataProps}
         className={className}
         style={style}
         type="button"

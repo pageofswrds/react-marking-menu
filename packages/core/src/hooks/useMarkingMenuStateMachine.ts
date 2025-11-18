@@ -24,6 +24,13 @@ export function useMarkingMenuStateMachine() {
     }, delay)
   }, [])
 
+  const startImmediate = useCallback((position: Position) => {
+    setState('active') // Immediately active, no timer
+    setOrigin(position)
+    setCurrentDirection(null)
+    setSelectedItem(null)
+  }, [])
+
   const updatePosition = useCallback((direction: Direction | Direction4 | null) => {
     // Update state and check if we should update direction
     setState((currentState) => {
@@ -74,6 +81,7 @@ export function useMarkingMenuStateMachine() {
     currentDirection,
     selectedItem,
     startPress,
+    startImmediate,
     updatePosition,
     endPress,
     cancel,
