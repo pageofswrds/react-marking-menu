@@ -1,6 +1,6 @@
 {
   "name": "@react-marking-menu/core",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.0",
   "description": "Headless React primitives for marking menus with gestural interaction",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -61,14 +61,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/react-marking-menu.git",
+    "url": "https://github.com/pageofswrds/react-marking-menu.git",
     "directory": "packages/core"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/react-marking-menu/issues"
+    "url": "https://github.com/pageofswrds/react-marking-menu/issues"
   },
-  "homepage": "https://github.com/yourusername/react-marking-menu#readme",
-  "author": "Your Name",
+  "homepage": "https://github.com/pageofswrds/react-marking-menu#readme",
+  "author": "David Zhang <pageofswrds@gmail.com>",
   "engines": {
     "node": ">=18"
   }
