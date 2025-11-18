@@ -2,6 +2,10 @@
 
 A headless React library for building marking menus with true gestural interaction.
 
+[![npm version](https://img.shields.io/npm/v/@react-marking-menu/core/beta)](https://www.npmjs.com/package/@react-marking-menu/core)
+[![npm downloads](https://img.shields.io/npm/dm/@react-marking-menu/core)](https://www.npmjs.com/package/@react-marking-menu/core)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 ## What is a Marking Menu?
 
 A marking menu is a radial context menu that enables fluid, gesture-based interaction through multiple input methods:
@@ -17,10 +21,8 @@ A marking menu is a radial context menu that enables fluid, gesture-based intera
 
 1. **Focus** - User tabs to the trigger element
 2. **Press and hold arrow key(s)** - Single key for cardinal directions (N/E/S/W), two keys for diagonals (NE/SE/SW/NW)
-3. **Menu appears** - Same visual feedback as pointer interaction (after 150ms threshold)
-4. **Multi-key sliding window** - Pressing additional keys uses the most recent 2 keys (e.g., holding Up+Right+Down uses Right+Down for SE)
-5. **Direction latching** - When releasing a multi-key combo, the direction is locked even if keys release slightly apart
-6. **Release to execute** - Releasing all keys executes the selected action
+3. **Menu appears** - Same visual feedback as pointer interaction
+4. **Release to execute** - Releasing all keys executes the selected action
 
 This interaction pattern is faster than traditional menus once learned, and is especially powerful for touch interfaces, creative applications, and **fully accessible for keyboard-only users**.
 
@@ -33,201 +35,141 @@ This library provides:
 - ✅ **True gesture recognition** - Press-hold-drag-release for pointer AND keyboard
 - ✅ **Unified input handling** - Same state machine for mouse, touch, and keyboard
 - ✅ **Headless primitives** - Full control over styling and rendering
-- ✅ **Framework philosophy** - Inspired by Radix UI's unstyled approach
-- ✅ **TypeScript first** - Complete type safety
-- ✅ **Fully accessible** - Keyboard navigation with arrow keys, ARIA support
+- ✅ **TypeScript first** - Complete type safety and IntelliSense
+- ✅ **Fully accessible** - Keyboard navigation, ARIA attributes, screen reader support
+- ✅ **Tree-shakeable** - Only bundle what you use
 - ✅ **Modern React** - Hooks, context, and concurrent mode safe
+
+## Quick Start
+
+### Installation
+
+```bash
+npm install @react-marking-menu/core@beta
+# or
+pnpm add @react-marking-menu/core@beta
+# or
+yarn add @react-marking-menu/core@beta
+```
+
+### Basic Usage
+
+```tsx
+import {
+  MarkingMenu,
+  MarkingMenuTrigger,
+  MarkingMenuContent,
+  MarkingMenuItem,
+} from '@react-marking-menu/core'
+
+function App() {
+  const handleSelect = (value: string) => {
+    console.log('Selected:', value)
+  }
+
+  return (
+    <MarkingMenu onSelect={handleSelect}>
+      <MarkingMenuTrigger>
+        <button>Right Click or Long Press Me</button>
+      </MarkingMenuTrigger>
+
+      <MarkingMenuContent>
+        <MarkingMenuItem id="copy" direction="N" label="Copy" />
+        <MarkingMenuItem id="paste" direction="S" label="Paste" />
+        <MarkingMenuItem id="cut" direction="E" label="Cut" />
+        <MarkingMenuItem id="delete" direction="W" label="Delete" />
+      </MarkingMenuContent>
+    </MarkingMenu>
+  )
+}
+```
 
 ## Packages
 
 This monorepo contains:
 
-### `@react-marking-menu/core`
+### `@react-marking-menu/core` (Published Beta)
 
 Headless primitives providing gesture recognition and state management without visual opinions.
 
 ```bash
-npm install @react-marking-menu/core
+npm install @react-marking-menu/core@beta
 ```
 
-**Status:** 🚧 In Development
+**Status:** 🚀 **v0.1.0-beta.0 Published** - Ready for testing and feedback!
 
-### `@react-marking-menu/styled`
+[📦 View on npm](https://www.npmjs.com/package/@react-marking-menu/core) | [📖 Documentation](./packages/core/README.md)
 
-Opinionated styled components built on the core primitives (SVG-based radial menu).
+### `@react-marking-menu/cli` (Planned)
 
-```bash
-npm install @react-marking-menu/styled
-```
+CLI tool for adding styled marking menu components to your project (shadcn/ui style).
 
-**Status:** 📋 Planned (after core is complete)
+**Status:** 📋 Planned - See [CLI_ARCHITECTURE.md](./CLI_ARCHITECTURE.md) for the spec
 
-### `@react-marking-menu/examples`
+### `@react-marking-menu/styled` (Planned)
 
-Example implementations showing different visual approaches.
+Pre-styled components built on the core primitives.
 
-**Status:** 📋 Planned
+**Status:** 📋 Planned (after CLI is complete)
 
----
+## Features
 
-## Implementation Plan
+### Current (v0.1.0-beta.0)
 
-### Phase 1: Core Headless Primitives (MVP)
+- ✅ Headless component primitives
+- ✅ Pointer gesture recognition (mouse/touch)
+- ✅ Keyboard gesture recognition (arrow keys with multi-key support)
+- ✅ Unified state machine for all input types
+- ✅ 8-directional and 4-directional support
+- ✅ Direction calculation utilities
+- ✅ TypeScript definitions
+- ✅ Accessibility features (ARIA, keyboard navigation, screen readers)
+- ✅ Configurable gesture thresholds
+- ✅ Origin positioning modes (cursor, element, viewport)
+- ✅ Render props pattern for full control
 
-**Goal:** Ship the behavior layer with zero visual opinions
+### Roadmap
 
-#### 1.1 Foundation (Week 1)
-
-- [x] Monorepo setup (pnpm + Turborepo)
-- [x] TypeScript configuration
-- [x] Core types definition
-- [x] Direction calculation utilities
-- [x] State machine hook
-- [ ] Keyboard utilities (arrow key mapping, multi-key state management, direction latching)
-- [ ] Unified gesture recognition hook (pointer + keyboard)
-- [ ] Distance/angle utilities with tests
-
-#### 1.2 Primitive Components (Week 2)
-
-- [ ] `MarkingMenu` - Root context provider
-- [ ] `MarkingMenuTrigger` - Gesture trigger with Slot pattern
-- [ ] `MarkingMenuContent` - Menu container primitive
-- [ ] `MarkingMenuItem` - Individual item primitive
-- [ ] `useMarkingMenuContext` - Context consumer hook
-
-**Component API Design:**
-
-```tsx
-<MarkingMenu>
-  <MarkingMenuTrigger asChild>
-    <button>Right-click or press</button>
-  </MarkingMenuTrigger>
-
-  <MarkingMenuContent>
-    <MarkingMenuItem direction="N" onSelect={() => console.log('Copy')}>
-      {({ isHighlighted }) => (
-        <YourCustomSlice highlighted={isHighlighted}>Copy</YourCustomSlice>
-      )}
-    </MarkingMenuItem>
-    {/* More items... */}
-  </MarkingMenuContent>
-</MarkingMenu>
-```
-
-#### 1.3 Accessibility (Week 3)
-
-**Keyboard Navigation:**
-- [ ] Arrow key press-and-hold gesture (integrated in unified gesture hook)
-- [ ] Multi-key diagonal selection (Up+Right = NE, etc.)
-- [ ] Direction latching on key release (prevents timing issues)
-- [ ] Escape key to cancel/close menu
-- [ ] Focus trap when menu is open (optional)
-- [ ] Visual indicator of pressed keys (optional, for learning)
-
-**Screen Reader Support:**
-- [ ] ARIA attributes (role="menu", aria-label, aria-activedescendant)
-- [ ] Live region announcements for direction changes
-- [ ] Accessible menu item labels
-
-**Other:**
-- [ ] Focus management and restoration
-- [ ] Reduced motion support (prefers-reduced-motion)
-- [ ] High contrast mode support
-
-#### 1.4 Testing & Documentation (Week 4)
-
-- [ ] Unit tests for utilities (directions, distance, angles, keyboard mapping)
-- [ ] Keyboard state manager tests (multi-key behavior, latching, sliding window)
-- [ ] Hook tests (state machine, unified gesture recognition)
-- [ ] Component integration tests (pointer and keyboard flows)
-- [ ] Accessibility tests (keyboard navigation, screen reader, focus management)
-- [ ] Cross-browser keyboard event tests
-- [ ] API documentation with keyboard examples
-- [ ] Storybook setup with interactive keyboard demos
-
-### Phase 2: Reference Implementations (Examples)
-
-**Goal:** Show flexibility of the primitives through multiple visual approaches
-
-#### 2.1 SVG Radial Menu (Week 5)
-
-- [ ] SVG path generation for arc segments
-- [ ] Hover/highlight states with CSS transitions
-- [ ] Radial layout with configurable radius
-- [ ] Icon support
-- [ ] Theme system with CSS variables
-
-#### 2.2 Additional Examples (Week 6)
-
-- [ ] Canvas-based implementation (high performance)
-- [ ] DOM-based with CSS transforms
-- [ ] Framer Motion animated version
-- [ ] Accessible text-only version
-- [ ] Mobile-optimized version
-
-### Phase 3: Styled Package (Optional)
-
-**Goal:** Provide opinionated styled version for quick adoption
-
-#### 3.1 Styled Components (Week 7-8)
-
-- [ ] `StyledMarkingMenuContent` - Pre-built SVG radial menu
-- [ ] `StyledMarkingMenuItem` - Styled menu slice
-- [ ] Default theme with CSS variables
-- [ ] Dark mode support
+- [ ] CLI tool for styled components (see CLI_ARCHITECTURE.md)
+- [ ] Pre-built styled templates (SVG radial, Canvas, DOM-based)
 - [ ] Animation presets
-- [ ] Icon integration
-
-### Phase 4: Polish & Release (Week 9-10)
-
-- [ ] Performance optimization
-- [ ] Bundle size optimization
+- [ ] Theme system
+- [ ] Additional examples and demos
 - [ ] Comprehensive documentation site
-- [ ] Tutorial videos/GIFs
-- [ ] Migration guides
-- [ ] v1.0.0 release
-
----
+- [ ] Video tutorials
 
 ## Architecture
 
-### Core Philosophy: Separation of Concerns
+### Core Philosophy: Headless & Accessible
 
-**Behavior Layer** (Philosophy 1) → `@react-marking-menu/core`
-- Unified gesture recognition (pointer + keyboard press-hold-drag-release)
+**Behavior Layer** → `@react-marking-menu/core`
+- Unified gesture recognition (pointer + keyboard)
 - State machine (idle → pressed → active → selecting)
-- Direction calculation (angle-based for pointer, key-based for keyboard)
-- Event handling (pointer, touch, keyboard)
-- Keyboard state management (multi-key sliding window, direction latching)
+- Direction calculation
 - Accessibility logic
 
-**Presentation Layer** (Philosophy 3) → `@react-marking-menu/styled` + examples
+**Presentation Layer** → You decide!
 - Visual rendering (SVG/Canvas/DOM)
 - Styling and theming
 - Animations
-- Layout
 
 ### State Machine
 
-**Unified for both pointer and keyboard input:**
-
 ```
 IDLE
-  ↓ (pointerDown OR first arrow key pressed)
-PRESSED [timer starts]
-  ↓ (threshold reached: 150ms)
+  ↓ (pointerDown OR arrow key pressed)
+PRESSED [150ms threshold]
+  ↓ (threshold reached)
 ACTIVE [menu visible]
-  ↓ (movement > minDistance OR direction from keys)
+  ↓ (movement > minDistance OR direction detected)
 SELECTING [item highlighted]
   ↓ (pointerUp OR all keys released)
 IDLE [onSelect called]
 ```
 
-**Key insight:** Same state machine handles both input methods, just different triggers and direction calculations.
+### Direction System
 
-### Direction Mapping
-
-8-direction system (45° each):
+8-direction support (45° each):
 
 ```
         N (270°)
@@ -239,195 +181,42 @@ W ──╳─────────╳── E (0°/360°)
         S (90°)
 ```
 
-Alternatively supports 4-direction system (90° each): N, E, S, W
+Also supports 4-direction mode: N, E, S, W
 
-### Gesture Recognition Algorithms
+## API Reference
 
-#### Pointer/Touch Gesture
+Full API documentation is available in the [core package README](./packages/core/README.md).
 
-```typescript
-function handlePointerDown(e) {
-  origin = { x: e.clientX, y: e.clientY }
-  state = 'pressed'
-
-  timer = setTimeout(() => {
-    state = 'active'  // Show menu
-  }, 150)
-}
-
-function handlePointerMove(e) {
-  if (state !== 'active' && state !== 'selecting') return
-
-  distance = getDistance(origin, { x: e.clientX, y: e.clientY })
-
-  if (distance < minDistance) {
-    currentDirection = null  // In dead zone
-  } else {
-    currentDirection = getDirectionFromPosition(
-      e.clientX, e.clientY,
-      origin.x, origin.y
-    )
-    state = 'selecting'
-  }
-}
-
-function handlePointerUp() {
-  clearTimeout(timer)
-
-  if (currentDirection && state === 'selecting') {
-    const item = findItemByDirection(currentDirection)
-    item?.onSelect()
-  }
-
-  state = 'idle'
-}
-```
-
-#### Keyboard Gesture (Arrow Keys)
-
-**Multi-key sliding window with direction latching:**
-
-```typescript
-// State
-pressedKeys: ArrowKey[] = []  // Stack of pressed keys in order
-isReleasing = false
-latchedDirection: Direction | null = null
-
-function handleKeyDown(key: ArrowKey) {
-  if (!pressedKeys.includes(key)) {
-    pressedKeys.push(key)
-  }
-
-  // Use last 2 keys (sliding window)
-  const direction = getDirectionFromKeys(pressedKeys.slice(-2))
-  currentDirection = direction
-
-  if (pressedKeys.length === 1) {
-    state = 'pressed'
-    timer = setTimeout(() => state = 'active', 150)
-  } else if (state === 'active') {
-    state = 'selecting'
-  }
-}
-
-function handleKeyUp(key: ArrowKey) {
-  pressedKeys = pressedKeys.filter(k => k !== key)
-
-  // Entering release phase - latch the direction
-  if (!isReleasing && pressedKeys.length < 2) {
-    isReleasing = true
-    latchedDirection = currentDirection
-  }
-
-  // All keys released - execute
-  if (pressedKeys.length === 0) {
-    clearTimeout(timer)
-    if (latchedDirection) {
-      const item = findItemByDirection(latchedDirection)
-      item?.onSelect()
-    }
-    state = 'idle'
-    isReleasing = false
-    latchedDirection = null
-  } else if (!isReleasing) {
-    // Still pressing - recalculate direction
-    currentDirection = getDirectionFromKeys(pressedKeys.slice(-2))
-  }
-}
-
-function getDirectionFromKeys(keys: ArrowKey[]): Direction {
-  const keySet = new Set(keys)
-
-  // Single key
-  if (keySet.has('ArrowUp') && keySet.size === 1) return 'N'
-  if (keySet.has('ArrowRight') && keySet.size === 1) return 'E'
-  if (keySet.has('ArrowDown') && keySet.size === 1) return 'S'
-  if (keySet.has('ArrowLeft') && keySet.size === 1) return 'W'
-
-  // Two keys (diagonals)
-  if (keySet.has('ArrowUp') && keySet.has('ArrowRight')) return 'NE'
-  if (keySet.has('ArrowDown') && keySet.has('ArrowRight')) return 'SE'
-  if (keySet.has('ArrowDown') && keySet.has('ArrowLeft')) return 'SW'
-  if (keySet.has('ArrowUp') && keySet.has('ArrowLeft')) return 'NW'
-
-  return null
-}
-```
-
-**Key behaviors:**
-- **Sliding window:** Pressing Up+Right+Down uses Right+Down (last 2 keys) for SE direction
-- **Direction latching:** When releasing multi-key combo, direction locks to prevent timing issues
-- **Same timing:** 150ms threshold and same state machine as pointer input
-
----
-
-## Technical Stack
-
-- **Language:** TypeScript 5.3+
-- **Framework:** React 18+
-- **Build:** tsup (fast TypeScript bundler)
-- **Test:** Vitest + React Testing Library
-- **Monorepo:** pnpm workspaces + Turborepo
-- **Versioning:** Changesets
-- **Linting:** ESLint + Prettier
-- **CI/CD:** GitHub Actions (planned)
-
----
-
-## Key Design Decisions
-
-### 1. Headless-First Approach
-
-**Why:** Maximum flexibility for users to implement any visual design while we handle complex gesture logic.
-
-**Inspired by:** Radix UI, React Aria, Headless UI
-
-### 2. Gesture Configuration
-
-```typescript
-interface GestureConfig {
-  pressThreshold?: number    // Default: 150ms
-  minDistance?: number       // Default: 30px
-  directions?: 4 | 8         // Default: 8
-  preventContextMenu?: boolean  // Default: true
-}
-```
-
-These defaults are tuned for optimal UX but fully configurable.
-
-### 3. Render Props Pattern
-
-Allow full rendering control:
+### Quick Reference
 
 ```tsx
-<MarkingMenuItem direction="N" onSelect={handleCopy}>
-  {({ isHighlighted, isActive, direction }) => (
-    <CustomSlice highlighted={isHighlighted} direction={direction}>
-      Copy
-    </CustomSlice>
-  )}
+// Root component
+<MarkingMenu
+  onSelect={(id) => void}
+  onCancel={() => void}
+  config={{ pressThreshold: 150, minDistance: 50, directions: 8 }}
+  a11y={{ announcements: true }}
+/>
+
+// Trigger
+<MarkingMenuTrigger asChild>
+  <button>Your trigger</button>
+</MarkingMenuTrigger>
+
+// Content container
+<MarkingMenuContent forceMount={false} />
+
+// Menu items
+<MarkingMenuItem
+  id="unique-id"
+  direction="N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW"
+  label="Label"
+  disabled={false}
+  onSelect={() => void}
+>
+  {({ isHighlighted, isSelected }) => <YourContent />}
 </MarkingMenuItem>
 ```
-
-### 4. TypeScript-First
-
-All APIs designed with TypeScript in mind. No `any` types, full inference.
-
----
-
-## Comparison to Existing Solutions
-
-| Feature | This Library | victorqribeiro/radialMenu | react-pie-menu | spaceymonk/react-radial-menu |
-|---------|-------------|---------------------------|----------------|------------------------------|
-| **True marking menu gestures** | ✅ Pointer + Keyboard | ❌ (click-based) | ❌ (click-based) | ❌ (click-based) |
-| **Keyboard navigation** | ✅ Arrow keys with hold | ❌ | ❌ | ❌ |
-| **Headless primitives** | ✅ | ❌ (opinionated canvas) | ❌ (styled-components) | ❌ (opinionated SVG) |
-| **TypeScript** | ✅ | ❌ | ✅ | ✅ |
-| **Full accessibility** | ✅ (planned) | ❌ | ❌ | ❌ |
-| **React 18+** | ✅ | N/A (vanilla) | ✅ | ✅ |
-| **Modern build** | ✅ (tsup) | ❌ | ⚠️ | ⚠️ |
-
----
 
 ## Development
 
@@ -442,83 +231,97 @@ All APIs designed with TypeScript in mind. No `any` types, full inference.
 # Install dependencies
 pnpm install
 
-# Run all package builds
+# Build all packages
 pnpm build
 
 # Run tests
 pnpm test
 
-# Lint
-pnpm lint
-
 # Type check
 pnpm typecheck
+
+# Lint
+pnpm lint
 ```
 
-### Working on packages
+### Working on the core package
 
 ```bash
-# Core package development
 cd packages/core
+
+# Development mode
 pnpm dev
 
 # Run tests in watch mode
 pnpm test:watch
+
+# Build
+pnpm build
 ```
 
-### Adding a changeset
+### Versioning
 
-When making changes:
+We use [Changesets](https://github.com/changesets/changesets) for version management:
 
 ```bash
+# Add a changeset
 pnpm changeset
+
+# Version packages
+pnpm version-packages
+
+# Publish (from root)
+pnpm release
 ```
 
-Follow the prompts to describe your changes. This will be used for automatic versioning and changelog generation.
+## Browser Support
 
----
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
+- React 18+
 
 ## Contributing
 
-Contributions welcome! This is an early-stage project. Areas that need help:
+Contributions are welcome! This is an early-stage project. Areas that need help:
 
-- Gesture recognition refinement
-- Accessibility testing
+- Testing in different frameworks (Next.js, Vite, CRA, Remix)
+- Accessibility testing with screen readers
 - Cross-browser testing
-- Documentation
+- Documentation improvements
 - Example implementations
+- CLI development
 
 Please open an issue before starting major work.
-
----
-
-## Roadmap
-
-- [x] **v0.1.0** - Monorepo setup, core types, basic utilities
-- [ ] **v0.2.0** - Complete headless primitives
-- [ ] **v0.3.0** - Accessibility implementation
-- [ ] **v0.4.0** - Comprehensive tests
-- [ ] **v0.5.0** - Example implementations
-- [ ] **v0.6.0** - Styled package
-- [ ] **v1.0.0** - Stable release
-
----
 
 ## Inspiration
 
 - **Radix UI** - Headless component philosophy
+- **shadcn/ui** - CLI-based component distribution
 - **React Aria** - Accessibility patterns
 - **Original marking menus research** - Kurtenbach & Buxton (1993)
 - **Autodesk Maya** - Industry-standard marking menu implementation
 
----
-
 ## License
 
-MIT © 2025
+MIT © 2025 David Zhang
+
+## Links
+
+- [npm Package](https://www.npmjs.com/package/@react-marking-menu/core)
+- [GitHub Repository](https://github.com/pageofswrds/react-marking-menu)
+- [Issue Tracker](https://github.com/pageofswrds/react-marking-menu/issues)
+- [Discussions](https://github.com/pageofswrds/react-marking-menu/discussions)
+
+## Support
+
+If you find this library useful, please consider:
+- ⭐ Starring the repository
+- 🐛 Reporting bugs
+- 💡 Suggesting features
+- 📖 Improving documentation
+- 🤝 Contributing code
 
 ---
 
-## Questions?
-
-Open an issue or discussion on GitHub. This is an active project and feedback is valuable!
+**Status:** Beta - Ready for testing! Please report any issues you encounter.
