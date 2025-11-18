@@ -13,9 +13,9 @@ A marking menu is a radial context menu where users:
 4. Release to execute the selection
 
 **Keyboard (Accessible):**
-1. Focus the trigger element
-2. Press and hold arrow key(s) for direction
-3. Menu appears with same visual feedback
+1. Focus the trigger element (tab or click)
+2. Press arrow key(s) for direction
+3. Menu appears instantly (no delay)
 4. Release to execute the selection
 
 This library provides the **unified gesture recognition logic** for both pointer and keyboard input without any visual opinions, following the Radix UI philosophy.
@@ -164,6 +164,79 @@ Since this is a headless library, you need to add your own styles. Here's a simp
   cursor: not-allowed;
 }
 ```
+
+### Required CSS for Touch Devices
+
+**IMPORTANT:** For touch interactions to work properly on iOS and Android, you **must** apply these CSS properties to your trigger element:
+
+```css
+.marking-menu-trigger {
+  /* Prevents default touch behaviors (scrolling, callouts) */
+  touch-action: none;
+
+  /* Prevents text selection during gestures */
+  user-select: none;
+  -webkit-user-select: none;
+
+  /* Prevents iOS callout menu on long press */
+  -webkit-touch-callout: none;
+}
+```
+
+**Why this is required:**
+
+While the library uses `preventDefault()` in JavaScript to handle gestures, CSS `touch-action` provides:
+- Better performance (prevents default behaviors at the browser level)
+- Prevention of certain browser behaviors that JavaScript can't fully control
+- Consistent behavior across different mobile browsers
+
+**Without these styles**, touch users will experience:
+- ❌ Page scrolling during drag gestures
+- ❌ Text selection when pressing and holding
+- ❌ iOS callout menus appearing on long press
+- ⚠️ Inconsistent gesture recognition
+
+### Styling Focus and Interaction States
+
+The trigger element provides both standard focus pseudo-classes and data attributes for styling:
+
+```css
+/* Standard focus styling (keyboard focus) */
+.marking-menu-trigger:focus-visible {
+  outline: 2px solid #0070f3;
+  outline-offset: 2px;
+}
+
+/* Style based on gesture state using data attributes */
+.marking-menu-trigger[data-idle] {
+  /* Normal state - ready for interaction */
+}
+
+.marking-menu-trigger[data-pressed] {
+  /* Press detected, waiting for threshold */
+}
+
+.marking-menu-trigger[data-active] {
+  /* Menu is open, ready for selection */
+  background: #f0f0f0;
+}
+
+.marking-menu-trigger[data-selecting] {
+  /* User is currently selecting an item */
+}
+```
+
+**Click vs Press-and-Hold:**
+
+The library distinguishes between quick clicks and press-and-hold gestures:
+
+- **Quick click** (< 150ms) → Just focuses the element, no menu opens
+- **Press and hold** (≥ 150ms) → Opens the menu for pointer gesture
+
+This allows users to:
+1. Click to focus the trigger
+2. Use arrow keys for keyboard navigation
+3. OR press-and-hold for pointer/touch gestures
 
 > **Tip:** For pre-styled components, check out `@react-marking-menu/styled` or use the CLI tool to copy styled variants into your project.
 

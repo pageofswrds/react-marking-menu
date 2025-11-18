@@ -112,6 +112,7 @@ export function useMarkingMenuGesture({
     currentDirection,
     selectedItem,
     startPress,
+    startImmediate,
     updatePosition,
     endPress,
     cancel,
@@ -121,6 +122,8 @@ export function useMarkingMenuGesture({
   const keyboardStateRef = useRef<KeyboardState>(createKeyboardState())
   const pointerIdRef = useRef<number | null>(null)
   const triggerElementRef = useRef<HTMLElement | null>(null)
+  const pointerDownTimerRef = useRef<NodeJS.Timeout | null>(null)
+  const isPointerGestureActiveRef = useRef<boolean>(false)
 
   // Calculate origin based on mode
   const calculateOrigin = useCallback(
@@ -208,6 +211,9 @@ export function useMarkingMenuGesture({
       // Ignore if we're already tracking a pointer
       if (pointerIdRef.current !== null) return
 
+      // Prevent default to avoid text selection and scrolling on touch devices
+      e.preventDefault()
+
       // Store trigger element reference
       triggerElementRef.current = e.currentTarget as HTMLElement
 
@@ -218,11 +224,17 @@ export function useMarkingMenuGesture({
       // Calculate origin based on mode
       const originPos = calculateOrigin(e, triggerElementRef.current)
 
-      // Start the gesture
-      startPress(originPos, pressThreshold)
+      // Set flag to false - gesture not active yet
+      isPointerGestureActiveRef.current = false
 
-      // Reset keyboard state when starting pointer gesture
-      keyboardStateRef.current = createKeyboardState()
+      // Start a timer - only start the gesture if pointer is held long enough
+      // This allows quick clicks to just focus the element without opening the menu
+      pointerDownTimerRef.current = setTimeout(() => {
+        isPointerGestureActiveRef.current = true
+        startPress(originPos, pressThreshold)
+        // Reset keyboard state when starting pointer gesture
+        keyboardStateRef.current = createKeyboardState()
+      }, pressThreshold)
     },
     [enabled, startPress, pressThreshold, calculateOrigin]
   )
@@ -238,6 +250,9 @@ export function useMarkingMenuGesture({
       if (state !== 'active' && state !== 'selecting') return
 
       if (!origin) return
+
+      // Prevent default to avoid scrolling on touch devices
+      e.preventDefault()
 
       const distance = getDistance(origin.x, origin.y, e.clientX, e.clientY)
 
@@ -266,14 +281,27 @@ export function useMarkingMenuGesture({
       // Only handle the captured pointer
       if (pointerIdRef.current !== e.pointerId) return
 
+      // Clear the timer if it's still running
+      if (pointerDownTimerRef.current) {
+        clearTimeout(pointerDownTimerRef.current)
+        pointerDownTimerRef.current = null
+      }
+
       // Release pointer capture
       ;(e.target as HTMLElement).releasePointerCapture?.(e.pointerId)
       pointerIdRef.current = null
 
-      // Execute selection
-      executeSelection(currentDirection)
+      // Only execute selection if the gesture was actually started
+      // (i.e., pointer was held long enough)
+      if (isPointerGestureActiveRef.current) {
+        executeSelection(currentDirection)
+        isPointerGestureActiveRef.current = false
+      } else {
+        // Quick click - just cancel any gesture and let the element receive focus
+        cancel()
+      }
     },
-    [enabled, executeSelection, currentDirection]
+    [enabled, executeSelection, currentDirection, cancel]
   )
 
   const handlePointerCancel = useCallback(
@@ -283,9 +311,16 @@ export function useMarkingMenuGesture({
       // Only handle the captured pointer
       if (pointerIdRef.current !== e.pointerId) return
 
+      // Clear the timer if it's still running
+      if (pointerDownTimerRef.current) {
+        clearTimeout(pointerDownTimerRef.current)
+        pointerDownTimerRef.current = null
+      }
+
       // Release pointer capture
       ;(e.target as HTMLElement).releasePointerCapture?.(e.pointerId)
       pointerIdRef.current = null
+      isPointerGestureActiveRef.current = false
 
       cancel()
       onCancel?.()
@@ -330,17 +365,17 @@ export function useMarkingMenuGesture({
       // Update state machine
       if (result.direction) {
         if (state === 'idle') {
-          // First key pressed - start gesture
+          // First key pressed - start gesture immediately (synchronous for keyboard)
           // Calculate origin based on mode (element or viewport for keyboard)
           const originPos = calculateOrigin(e, triggerElementRef.current)
-          startPress(originPos, pressThreshold)
+          startImmediate(originPos) // Immediately active, no async timer
         }
 
         // Update direction
         updatePosition(result.direction)
       }
     },
-    [enabled, state, cancel, startPress, updatePosition, pressThreshold, calculateOrigin]
+    [enabled, state, cancel, startImmediate, updatePosition, calculateOrigin]
   )
 
   const handleKeyUp = useCallback(
@@ -416,6 +451,11 @@ export function useMarkingMenuGesture({
   // Cleanup on unmount
   useEffect(() => {
     return () => {
+      // Clear any pending timer
+      if (pointerDownTimerRef.current) {
+        clearTimeout(pointerDownTimerRef.current)
+        pointerDownTimerRef.current = null
+      }
       // Reset keyboard state on unmount
       keyboardStateRef.current = createKeyboardState()
     }

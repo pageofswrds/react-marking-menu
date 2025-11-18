@@ -8,16 +8,17 @@ A marking menu is a radial context menu that enables fluid, gesture-based intera
 
 ### 🖱️ Pointer/Touch Interaction
 
-1. **Press and hold** - User presses and holds a button or touch point
-2. **Menu appears** - Options radiate outward in 8 directions (N, NE, E, SE, S, SW, W, NW)
-3. **Drag to select** - While still holding, user drags toward their desired option
-4. **Release to execute** - Releasing the press executes the selected action
+1. **Click to focus** - Quick click (< 150ms) focuses the element for keyboard use
+2. **Press and hold** - User presses and holds (≥ 150ms) to start gesture
+3. **Menu appears** - Options radiate outward in 8 directions (N, NE, E, SE, S, SW, W, NW)
+4. **Drag to select** - While still holding, user drags toward their desired option
+5. **Release to execute** - Releasing the press executes the selected action
 
 ### ⌨️ Keyboard Interaction (Accessible)
 
-1. **Focus** - User tabs to the trigger element
-2. **Press and hold arrow key(s)** - Single key for cardinal directions (N/E/S/W), two keys for diagonals (NE/SE/SW/NW)
-3. **Menu appears** - Same visual feedback as pointer interaction (after 150ms threshold)
+1. **Focus** - User tabs to the trigger element (or clicks to focus)
+2. **Press arrow key(s)** - Single key for cardinal directions (N/E/S/W), two keys for diagonals (NE/SE/SW/NW)
+3. **Menu appears instantly** - No delay for keyboard interaction, immediate visual feedback
 4. **Multi-key sliding window** - Pressing additional keys uses the most recent 2 keys (e.g., holding Up+Right+Down uses Right+Down for SE)
 5. **Direction latching** - When releasing a multi-key combo, the direction is locked even if keys release slightly apart
 6. **Release to execute** - Releasing all keys executes the selected action
@@ -70,122 +71,69 @@ Example implementations showing different visual approaches.
 
 ---
 
-## Implementation Plan
+## Status
 
-### Phase 1: Core Headless Primitives (MVP)
+### ✅ Implemented (v0.1.0-beta)
 
-**Goal:** Ship the behavior layer with zero visual opinions
+**Core Primitives:**
+- ✅ Monorepo setup (pnpm + Turborepo)
+- ✅ TypeScript configuration with full type safety
+- ✅ Headless component architecture
+- ✅ State machine for gesture management
+- ✅ Direction calculation utilities (8 & 4 direction support)
+- ✅ Keyboard utilities (multi-key sliding window, direction latching)
+- ✅ Unified gesture recognition (pointer + keyboard)
 
-#### 1.1 Foundation (Week 1)
+**Components:**
+- ✅ `MarkingMenu` - Root context provider
+- ✅ `MarkingMenuTrigger` - Gesture trigger with asChild pattern
+- ✅ `MarkingMenuContent` - Menu container primitive
+- ✅ `MarkingMenuItem` - Individual item primitive
+- ✅ `KeyboardIndicator` - Visual keyboard state feedback (optional)
+- ✅ `LiveRegion` - Screen reader announcements
 
-- [x] Monorepo setup (pnpm + Turborepo)
-- [x] TypeScript configuration
-- [x] Core types definition
-- [x] Direction calculation utilities
-- [x] State machine hook
-- [ ] Keyboard utilities (arrow key mapping, multi-key state management, direction latching)
-- [ ] Unified gesture recognition hook (pointer + keyboard)
-- [ ] Distance/angle utilities with tests
+**Gesture Features:**
+- ✅ Pointer gestures (mouse/touch) with press-and-hold
+- ✅ Click-to-focus behavior (150ms threshold to distinguish from hold)
+- ✅ Keyboard gestures with instant feedback (0ms delay)
+- ✅ Multi-key diagonal selection (e.g., Up+Right = NE)
+- ✅ Direction latching on key release
+- ✅ Escape key to cancel
+- ✅ Touch device support (preventDefault on pointer events)
+- ✅ Context menu prevention
 
-#### 1.2 Primitive Components (Week 2)
+**Accessibility:**
+- ✅ ARIA attributes (role, aria-expanded, aria-haspopup)
+- ✅ Keyboard navigation (arrow keys)
+- ✅ Focus management with data attributes for styling
+- ✅ Reduced motion support hook
+- ✅ Screen reader support via live regions
 
-- [ ] `MarkingMenu` - Root context provider
-- [ ] `MarkingMenuTrigger` - Gesture trigger with Slot pattern
-- [ ] `MarkingMenuContent` - Menu container primitive
-- [ ] `MarkingMenuItem` - Individual item primitive
-- [ ] `useMarkingMenuContext` - Context consumer hook
+**Testing:**
+- ✅ Unit tests for utilities (directions, keyboard)
+- ✅ Hook tests (state machine, gesture recognition)
+- ✅ Component integration tests
+- ✅ Accessibility tests
 
-**Component API Design:**
+### 🚧 Future Plans
 
-```tsx
-<MarkingMenu>
-  <MarkingMenuTrigger asChild>
-    <button>Right-click or press</button>
-  </MarkingMenuTrigger>
+**Examples & Documentation:**
+- 📋 Reference implementations (SVG radial, Canvas, etc.)
+- 📋 Storybook with interactive demos
+- 📋 Comprehensive documentation site
+- 📋 Tutorial videos/GIFs
 
-  <MarkingMenuContent>
-    <MarkingMenuItem direction="N" onSelect={() => console.log('Copy')}>
-      {({ isHighlighted }) => (
-        <YourCustomSlice highlighted={isHighlighted}>Copy</YourCustomSlice>
-      )}
-    </MarkingMenuItem>
-    {/* More items... */}
-  </MarkingMenuContent>
-</MarkingMenu>
-```
+**Styled Package:**
+- 📋 `@react-marking-menu/styled` - Pre-built styled components
+- 📋 Default themes with CSS variables
+- 📋 Dark mode support
+- 📋 Animation presets
 
-#### 1.3 Accessibility (Week 3)
-
-**Keyboard Navigation:**
-- [ ] Arrow key press-and-hold gesture (integrated in unified gesture hook)
-- [ ] Multi-key diagonal selection (Up+Right = NE, etc.)
-- [ ] Direction latching on key release (prevents timing issues)
-- [ ] Escape key to cancel/close menu
-- [ ] Focus trap when menu is open (optional)
-- [ ] Visual indicator of pressed keys (optional, for learning)
-
-**Screen Reader Support:**
-- [ ] ARIA attributes (role="menu", aria-label, aria-activedescendant)
-- [ ] Live region announcements for direction changes
-- [ ] Accessible menu item labels
-
-**Other:**
-- [ ] Focus management and restoration
-- [ ] Reduced motion support (prefers-reduced-motion)
-- [ ] High contrast mode support
-
-#### 1.4 Testing & Documentation (Week 4)
-
-- [ ] Unit tests for utilities (directions, distance, angles, keyboard mapping)
-- [ ] Keyboard state manager tests (multi-key behavior, latching, sliding window)
-- [ ] Hook tests (state machine, unified gesture recognition)
-- [ ] Component integration tests (pointer and keyboard flows)
-- [ ] Accessibility tests (keyboard navigation, screen reader, focus management)
-- [ ] Cross-browser keyboard event tests
-- [ ] API documentation with keyboard examples
-- [ ] Storybook setup with interactive keyboard demos
-
-### Phase 2: Reference Implementations (Examples)
-
-**Goal:** Show flexibility of the primitives through multiple visual approaches
-
-#### 2.1 SVG Radial Menu (Week 5)
-
-- [ ] SVG path generation for arc segments
-- [ ] Hover/highlight states with CSS transitions
-- [ ] Radial layout with configurable radius
-- [ ] Icon support
-- [ ] Theme system with CSS variables
-
-#### 2.2 Additional Examples (Week 6)
-
-- [ ] Canvas-based implementation (high performance)
-- [ ] DOM-based with CSS transforms
-- [ ] Framer Motion animated version
-- [ ] Accessible text-only version
-- [ ] Mobile-optimized version
-
-### Phase 3: Styled Package (Optional)
-
-**Goal:** Provide opinionated styled version for quick adoption
-
-#### 3.1 Styled Components (Week 7-8)
-
-- [ ] `StyledMarkingMenuContent` - Pre-built SVG radial menu
-- [ ] `StyledMarkingMenuItem` - Styled menu slice
-- [ ] Default theme with CSS variables
-- [ ] Dark mode support
-- [ ] Animation presets
-- [ ] Icon integration
-
-### Phase 4: Polish & Release (Week 9-10)
-
-- [ ] Performance optimization
-- [ ] Bundle size optimization
-- [ ] Comprehensive documentation site
-- [ ] Tutorial videos/GIFs
-- [ ] Migration guides
-- [ ] v1.0.0 release
+**Polish:**
+- 📋 Performance optimizations
+- 📋 Bundle size optimization
+- 📋 Cross-browser testing
+- 📋 v1.0.0 stable release
 
 ---
 
@@ -214,8 +162,8 @@ Example implementations showing different visual approaches.
 ```
 IDLE
   ↓ (pointerDown OR first arrow key pressed)
-PRESSED [timer starts]
-  ↓ (threshold reached: 150ms)
+PRESSED [timer starts for pointer only]
+  ↓ (threshold reached: 150ms for pointer, 0ms for keyboard)
 ACTIVE [menu visible]
   ↓ (movement > minDistance OR direction from keys)
 SELECTING [item highlighted]
@@ -223,7 +171,9 @@ SELECTING [item highlighted]
 IDLE [onSelect called]
 ```
 
-**Key insight:** Same state machine handles both input methods, just different triggers and direction calculations.
+**Key insight:** Same state machine handles both input methods with different timing:
+- **Pointer gestures**: 150ms delay to distinguish clicks from press-and-hold
+- **Keyboard gestures**: 0ms delay for instant response
 
 ### Direction Mapping
 
@@ -240,124 +190,6 @@ W ──╳─────────╳── E (0°/360°)
 ```
 
 Alternatively supports 4-direction system (90° each): N, E, S, W
-
-### Gesture Recognition Algorithms
-
-#### Pointer/Touch Gesture
-
-```typescript
-function handlePointerDown(e) {
-  origin = { x: e.clientX, y: e.clientY }
-  state = 'pressed'
-
-  timer = setTimeout(() => {
-    state = 'active'  // Show menu
-  }, 150)
-}
-
-function handlePointerMove(e) {
-  if (state !== 'active' && state !== 'selecting') return
-
-  distance = getDistance(origin, { x: e.clientX, y: e.clientY })
-
-  if (distance < minDistance) {
-    currentDirection = null  // In dead zone
-  } else {
-    currentDirection = getDirectionFromPosition(
-      e.clientX, e.clientY,
-      origin.x, origin.y
-    )
-    state = 'selecting'
-  }
-}
-
-function handlePointerUp() {
-  clearTimeout(timer)
-
-  if (currentDirection && state === 'selecting') {
-    const item = findItemByDirection(currentDirection)
-    item?.onSelect()
-  }
-
-  state = 'idle'
-}
-```
-
-#### Keyboard Gesture (Arrow Keys)
-
-**Multi-key sliding window with direction latching:**
-
-```typescript
-// State
-pressedKeys: ArrowKey[] = []  // Stack of pressed keys in order
-isReleasing = false
-latchedDirection: Direction | null = null
-
-function handleKeyDown(key: ArrowKey) {
-  if (!pressedKeys.includes(key)) {
-    pressedKeys.push(key)
-  }
-
-  // Use last 2 keys (sliding window)
-  const direction = getDirectionFromKeys(pressedKeys.slice(-2))
-  currentDirection = direction
-
-  if (pressedKeys.length === 1) {
-    state = 'pressed'
-    timer = setTimeout(() => state = 'active', 150)
-  } else if (state === 'active') {
-    state = 'selecting'
-  }
-}
-
-function handleKeyUp(key: ArrowKey) {
-  pressedKeys = pressedKeys.filter(k => k !== key)
-
-  // Entering release phase - latch the direction
-  if (!isReleasing && pressedKeys.length < 2) {
-    isReleasing = true
-    latchedDirection = currentDirection
-  }
-
-  // All keys released - execute
-  if (pressedKeys.length === 0) {
-    clearTimeout(timer)
-    if (latchedDirection) {
-      const item = findItemByDirection(latchedDirection)
-      item?.onSelect()
-    }
-    state = 'idle'
-    isReleasing = false
-    latchedDirection = null
-  } else if (!isReleasing) {
-    // Still pressing - recalculate direction
-    currentDirection = getDirectionFromKeys(pressedKeys.slice(-2))
-  }
-}
-
-function getDirectionFromKeys(keys: ArrowKey[]): Direction {
-  const keySet = new Set(keys)
-
-  // Single key
-  if (keySet.has('ArrowUp') && keySet.size === 1) return 'N'
-  if (keySet.has('ArrowRight') && keySet.size === 1) return 'E'
-  if (keySet.has('ArrowDown') && keySet.size === 1) return 'S'
-  if (keySet.has('ArrowLeft') && keySet.size === 1) return 'W'
-
-  // Two keys (diagonals)
-  if (keySet.has('ArrowUp') && keySet.has('ArrowRight')) return 'NE'
-  if (keySet.has('ArrowDown') && keySet.has('ArrowRight')) return 'SE'
-  if (keySet.has('ArrowDown') && keySet.has('ArrowLeft')) return 'SW'
-  if (keySet.has('ArrowUp') && keySet.has('ArrowLeft')) return 'NW'
-
-  return null
-}
-```
-
-**Key behaviors:**
-- **Sliding window:** Pressing Up+Right+Down uses Right+Down (last 2 keys) for SE direction
-- **Direction latching:** When releasing multi-key combo, direction locks to prevent timing issues
-- **Same timing:** 150ms threshold and same state machine as pointer input
 
 ---
 
@@ -429,6 +261,35 @@ All APIs designed with TypeScript in mind. No `any` types, full inference.
 
 ---
 
+## Touch Device Support
+
+For optimal touch interaction on mobile devices (iOS, Android), you **must** apply the following CSS to your trigger element:
+
+```css
+.marking-menu-trigger {
+  /* Prevents default touch behaviors (scrolling, callouts) */
+  touch-action: none;
+
+  /* Prevents text selection during gestures */
+  user-select: none;
+  -webkit-user-select: none;
+
+  /* Prevents iOS callout menu on long press */
+  -webkit-touch-callout: none;
+}
+```
+
+**Why this is needed:**
+
+The library handles gesture recognition via JavaScript (`preventDefault()` on pointer events), but CSS `touch-action` provides better performance and prevents certain browser behaviors that can't be fully controlled by JavaScript alone.
+
+**Without these styles**, users may experience:
+- ❌ Page scrolling during drag gestures
+- ❌ Text selection when pressing and holding
+- ❌ iOS callout menus appearing on long press
+
+---
+
 ## Development
 
 ### Prerequisites
@@ -494,12 +355,22 @@ Please open an issue before starting major work.
 
 ## Roadmap
 
-- [x] **v0.1.0** - Monorepo setup, core types, basic utilities
-- [ ] **v0.2.0** - Complete headless primitives
-- [ ] **v0.3.0** - Accessibility implementation
-- [ ] **v0.4.0** - Comprehensive tests
-- [ ] **v0.5.0** - Example implementations
-- [ ] **v0.6.0** - Styled package
+- [x] **v0.1.0-beta** - Core headless primitives with full gesture support
+  - Monorepo setup, types, utilities
+  - Complete component library (MarkingMenu, Trigger, Content, Item)
+  - Unified gesture recognition (pointer + keyboard)
+  - Keyboard navigation with multi-key support
+  - Touch device support
+  - Accessibility features (ARIA, focus management, screen readers)
+  - Comprehensive test suite
+- [ ] **v0.2.0** - Polish and documentation
+  - Example implementations
+  - Interactive documentation site
+  - Performance optimizations
+- [ ] **v0.3.0** - Styled package
+  - Pre-built styled components
+  - Theme system
+  - Animation presets
 - [ ] **v1.0.0** - Stable release
 
 ---

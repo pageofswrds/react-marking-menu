@@ -1,6 +1,7 @@
 {
   "name": "@react-marking-menu/styled",
-  "version": "0.0.0",
+  "version": "0.0.1",
+  "private": true,
   "description": "Styled React components for marking menus built on @react-marking-menu/core",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
