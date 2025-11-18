@@ -1,6 +1,6 @@
 {
   "name": "@react-marking-menu/core",
-  "version": "0.1.0-beta.0",
+  "version": "0.1.0",
   "description": "Headless React primitives for marking menus with gestural interaction",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
