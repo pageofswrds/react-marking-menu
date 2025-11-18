@@ -25,13 +25,22 @@ export function useMarkingMenuStateMachine() {
   }, [])
 
   const updatePosition = useCallback((direction: Direction | Direction4 | null) => {
-    if (state === 'active' || state === 'selecting') {
-      setCurrentDirection(direction)
-      if (direction !== null && state !== 'selecting') {
-        setState('selecting')
+    // Update state and check if we should update direction
+    setState((currentState) => {
+      // Only update if we're in active or selecting state
+      if (currentState === 'active' || currentState === 'selecting') {
+        // Update direction immediately when in valid state
+        setCurrentDirection(direction)
+
+        // Transition to selecting if we have a direction and aren't already selecting
+        if (direction !== null && currentState === 'active') {
+          return 'selecting'
+        }
       }
-    }
-  }, [state])
+
+      return currentState
+    })
+  }, [])
 
   const endPress = useCallback((itemId: string | null) => {
     if (pressTimerRef.current) {

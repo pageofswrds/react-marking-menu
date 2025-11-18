@@ -22,14 +22,14 @@ import { useEffect, useState } from 'react'
 export function useReducedMotion(): boolean {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(() => {
     // Check on initial render
-    if (typeof window === 'undefined') return false
+    if (typeof window === 'undefined' || !window.matchMedia) return false
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
     return mediaQuery.matches
   })
 
   useEffect(() => {
-    // Skip if running on server
-    if (typeof window === 'undefined') return
+    // Skip if running on server or matchMedia is not available
+    if (typeof window === 'undefined' || !window.matchMedia) return
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)')
 
