@@ -5,10 +5,10 @@
   "description": "A headless React library for marking menus with true gestural interaction",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/react-marking-menu.git"
+    "url": "https://github.com/pageofswrds/react-marking-menu.git"
   },
   "license": "MIT",
-  "author": "Your Name",
+  "author": "pageofswrds",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
